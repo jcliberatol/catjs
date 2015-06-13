@@ -3,4 +3,4 @@ Router.route('/', function () {
 });
 
 Router.route('/cat');
-Router.route('/testmaker');
+Router.route('/analyst');
