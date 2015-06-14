@@ -50,7 +50,16 @@ Pure Menu Customization
 }
 
 .pure-item:hover{
-	background-color: rgba(10,100,200,0.4);
+	background-color: rgba(10,100,200,0.4) !important;
+}
+
+.pure-item-selected{
+	border-style: solid !important;
+	border-width: 2px !important;
+	border-color: rgba(10,100,200,1) !important;
+	border-radius: 10px !important;
+	background-color: rgba(10,100,200,0.4) !important;
+	color: rgba(10,100,200,1);
 }
 
 .pure-button-item{
@@ -74,6 +83,15 @@ Pure Menu Customization
 	color: rgba(10,100,200,1);
 }
 
+.pure-button-tag-selected{
+	border-style: solid !important;
+	border-width: 2px !important;
+	border-color: rgba(10,100,200,1) !important;
+	border-radius: 10px !important;
+	background-color: rgba(10,100,200,0.4) !important;
+	color: rgba(10,100,200,1);	
+}
+
 .pure-button-option:hover{
 	background-color: rgba(10,100,200,0.2);
 	color: rgba(10,100,200,1);
@@ -85,6 +103,16 @@ Pure Menu Customization
 	padding: 8px;
 }
 
+.pure-button-tag{
+	background-color: rgba(10,100,200,0.05);
+	margin: 2px;
+	padding: 8px;
+}
+
+.pure-button-tag:hover{
+	background-color: rgba(10,100,200,0.2);
+	color: rgba(10,100,200,1);
+}
 .pure-button-item:hover{
 	background-color: rgba(10,100,200,0.4);
 }
