@@ -126,3 +126,100 @@ Pure Menu Customization
 	border-radius: 10px !important;
 	width: 95%;
 }
+
+
+/* login css */
+
+.login-container {
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 35%;
+	z-index: 100;
+}
+
+.login-link-and-dropdown-list{
+	margin : 5px;
+	padding: 5px;
+	background-color: rgba(10,100,200,0.2);
+}
+
+.login-link-text {
+	color: rgba(10,100,200,1);
+}
+
+.accounts-dialog {
+	margin : 2px;
+	padding: 1px;
+	display: block;
+}
+
+.login-close-text {
+	display: block;
+	margin: 3px;
+	width: 100%;
+	padding: 3px;
+	border-radius: 10px;
+	background-color: rgba(10,100,200,0.2);
+}
+
+.login-close-text:hover{
+	background-color: rgba(10,100,200,0.5);
+}
+
+.login-form {
+	margin: 2px;
+	padding: 2px;
+	width: 100%;
+}
+
+#login-email-label-and-input {
+	margin: 2px;
+	padding: 2px;
+	width: 80%;
+	border-style: solid;
+	border-width: 2px;
+	border-radius: 2px;
+	background-color: rgba(10,100,200,0.2);
+	border-color: rgba(10,100,200,1);
+	color : rgba(10,10,100,1);
+}
+
+#login-password-label-and-input {
+	margin: 2px;
+	padding: 2px;
+	width: 80%;
+	border-style: solid;
+	border-width: 2px;
+	border-radius: 2px;
+	background-color: rgba(10,100,200,0.2);
+	border-color: rgba(10,100,200,1);
+	color : rgba(10,10,100,1);
+}
+
+.login-button {
+	margin: 3px;
+	padding: 5px;
+	border-style: solid;
+	border-width: 2px;
+	background-color: rgba(10,100,200,0.5);
+	color: white;
+	border-color: rgba(10,100,200,1);
+	text-align: center;
+	border-radius: 20px;
+}
+
+.additional-link {
+	margin: 2px;
+	padding: 2px;
+	text-decoration: underline;
+	color : rgba(10,100,200,1);
+}
+
+.additional-link:hover{
+	color: rgba(10,10,100,1);
+}
+.error-message {
+	font-size: 10px;
+	color: red;
+}
