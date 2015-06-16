@@ -1,16 +1,102 @@
 GUI$arrays = new Mongo.Collection("gui.arrays");
 
+Meteor.startup(function () { 
+  var map = [];
+  $(document).on('keydown', function (e) {
+  	map[e.keyCode] = e.type =='keydown';
+
+  	//Conditionals run here
+  	//crtl 17
+  	//enter 13
+  	//alt 18
+  	// 37 & 39 flechas
+  	// o 79  Insertar Opcion
+  	// e 69  Insertar etiqueta
+  	// n 78  Nombre del item
+  	// d 68  
+  	// t 84 
+  	// p 89  
+  	if(map[17] && map[8]){
+  		$('.test-state-new').trigger("click");
+  	}
+  	if(map[17] && map[13]){
+  		$('.item-button-finish').trigger("click");
+  		$('.test-state-released').trigger("click");
+  	}
+  	if(map[17] && map[37]){
+  		$("#nav-items").trigger("click");
+  		return false;
+  	}
+  	if(map[17] && map[39]){
+  		$("#nav-tests").trigger("click");
+  		return false;
+  	}
+  	if(map[17] && map[79]){
+  		$(".option-add-button").trigger("click");
+  		return false;
+  	}
+  	if(map[17] && map[69]){
+  		$(".tag-add-button").trigger("click");
+  		return false;
+  	}
+  	if(map[17] && map[78]){
+  		if(map[18]){
+  			$(".pure-plus").trigger("click");
+  			console.log("ctrlaltn");
+  			return false;
+  			}
+  		else{
+  			$(".itemname").focus();
+  			console.log("ctrl-n");
+  			return false;
+  			}
+  		}
+
+  });
+  $(document).on('keyup',function (e){
+  	map[e.keyCode] = e.type == 'keydown';
+  });
+
+});
+
+
 Template.wd_analyst_navbar.events({
 	"click .pure-menu-item":function(event) {
 		var targetid = event.target.id;
 		$(".pure-menu-selected").removeClass("pure-menu-selected");
 		Session.set('wd_analyst_viewport_window',targetid);
-		console.log("wd_analyst_viewport_window","enabled",targetid);
 		$(event.target).addClass("pure-menu-selected");
 	}
 });
 
-Template.wd_analyst_items_view.events({
+Template.wd_analyst_tests_edit.helpers({
+	item_full : function(){
+		return core$item.findOne({ _id : this._id});
+	},
+	exporteditems : function(){
+		console.log(core$item.find({ state: "exported"}));
+		console.log(core$item.findOne({ state: "exported"}));
+		return core$item.find({ state: "exported"});
+	},
+	test_state_new : function(){
+		tid = Session.get('wd_analyst_test');
+		ctest = core$test.findOne({_id : tid});
+		return ctest.state=="nuevo";
+	},
+	test_state_verified : function(){
+		tid = Session.get('wd_analyst_test');
+		ctest = core$test.findOne({_id : tid});
+		return ctest.state=="verificado";
+	},
+	test_state_released : function(){
+		tid = Session.get('wd_analyst_test');
+		ctest = core$test.findOne({_id : tid});
+		return ctest.state=="liberado";
+		//Crear un test asociado a este que contenga respuestas y todo
+	},
+});
+
+Template.wd_analyst_tests_edit.events({
 	"click .pure-item": function(event) {
 		$(".pure-item-selected").removeClass("pure-item-selected");
 		var targetid = '[title='+'"'+event.target.title+'"]'
@@ -18,410 +104,181 @@ Template.wd_analyst_items_view.events({
 		$(targetid+".pure-item").addClass("pure-item-selected");
 		return false;
 	},
-	"click .pure-edit" : function(event){
-		//Load this item in the personal viewport database
-		name = $(".pure-item-selected").attr('title');
-		//Cargar el objeto con el nombre name de la DB grande
-		obj = core$item.findOne({name : name});
-		console.log(obj);
-		//Call the viewport from the event on DB.
-		GUI$arrays._collection.update({name : "item"},{
-				name : "item",
-				item : obj},
-			{upsert : true}
-		);
+	"click .pure-back": function(event){
+		Helpers.slidetext("Quitando el item de items exportados");
+		newid = $('.pure-item-selected').attr('title');
+		Meteor.call("tag_as_new_item",newid);
+		return false;
 	},
-	"click .pure-minus" : function(event){
-		//Load the item
-		name = $(".pure-item-selected").attr('title');
-		//Call delete method on name of item
-		Meteor.call('delete_item',name);
+	"click .pure-check":function(event){
+		Helpers.slidetext("Item seleccionado");
+		itemid = $(".pure-item-selected").attr("title");
+		testid = Session.get('wd_analyst_test');
+		Meteor.call("add_item_to_test",itemid,testid);
+		Meteor.call("set_temporary_state",itemid,"ontest");
+		return false;
 	},
-	"click .pure-plus" : function(event){
-		//Reload the viewport with new elements
-		item = {
-			name : "",
-			description : "",
-			text : "",
-			question : "",
-			options : "",
-			tags : "",
-			CreatedAt : Date(),
+	"submit .pure-form":function(event){
+		return false;
+	},
+	"blur .testname":function(event){
+		testid = Session.get('wd_analyst_test');
+		Meteor.call('update_test_name',testid,event.target.value);
+	},
+	"blur .testdesc":function(event){
+		testid = Session.get('wd_analyst_test');
+		Meteor.call('update_test_desc',testid,event.target.value);
+	},
+	"click .tag-add-button": function(event){
+		testid = Session.get('wd_analyst_test');
+		tag = $(".itemtags")[0].value;
+		if(!tag){
+			Helpers.slidetext('Inserta algun texto en la etiqueta');
 		}
-		GUI$arrays._collection.update({name : "item"},{
-				name : "item",
-				item : item,
-			},
-			{
-				upsert : true
-			}
-		);
+		else{
+		Helpers.slidetext("Etiqueta añadida :"+tag);
+		Meteor.call('add_tag_test',testid,tag);
+		$(".itemtags")[0].value="";
+		}
+	},
+	"click .delete-tag" : function(event){
+		console.log(event.target.name);
+		testid = Session.get('wd_analyst_test');
+		Meteor.call('delete_tag_test',testid,event.target.name);
+	},
+	"click #item-remove": function(event){
+		console.log(event.target.name);
+		testid = Session.get('wd_analyst_test');
+		Meteor.call('remove_test_item',testid,event.target.name);	
+	},
+	"click .test-state-new":function(event){
+		testid = Session.get('wd_analyst_test');
+		Meteor.call("update_test_state",testid,"nuevo");
+	},
+	"click .test-state-released":function(event){
+		testid = Session.get('wd_analyst_test');
+		Meteor.call('start_test_run',tid);
+		Meteor.call("update_test_state",testid,"liberado");
+	},
+	"click .item-button-finish":function(event){
+		//Esto cambia el estado del item a item verificado y listo para salir al publico
+		testid = Session.get('wd_analyst_test');
+		//Verificaciones
+		test = core$test.findOne({_id : testid});
+		verified = true;
+		if(test.tags.length < 1){
+			Helpers.slidetext("Mas etiquetas servirian tal vez. ...");
+			verified = false;
+		}
+		if(test.items.length < 1){
+			Helpers.slidetext("Mas items servirian tal vez. ...");
+			verified = false;
+		}
+		if(test.description == ""){
+			Helpers.slidetext("Una descripcion mas descriptiva ? ...  tal vez. ...");
+			verified = false;
+		}
+
+		if(verified){
+		Helpers.slidetext("Item verificado !");
+		Meteor.call('promote_to_verified',testid);
+		}
+	},
+	"keypress input" : function(event){
+		console.log(event);
+		if(event.key=="Enter"){
+			$(".tag-add-button").trigger("click");
+		return false;
+		}
+		if (event.ctrlKey && event.key=="Enter"){
+			Helpers.slidetext('control enter');
+		}
 	}
+});
+Template.wd_analyst_tests_view.events({
+	"click .pure-item": function(event) {
+		$(".pure-test-selected").removeClass("pure-test-selected");
+		var targetid = '[title='+'"'+event.target.title+'"]'
+		Session.set('wd_analyst_test',event.target.title);
+		$(targetid+".pure-item").addClass("pure-test-selected");
+		return false;
+	},
+	"click .pure-minus": function(event){
+		testid = Session.get('wd_analyst_test');
+		Meteor.call('delete_test',testid);
+	},
+	"click .pure-plus": function(event){
+		Meteor.call('add_test');
+	},
+});
+
+Template.wd_analyst_tests_view.helpers({
+	tests : function(){
+		return core$test.find({});
+	},
+	selected_test : function(){
+		newid = Session.get('wd_analyst_test');
+		//Seleccionar el test que esta en la seccion con jquery
+		var targetid = '[title='+'"'+newid+'"]';
+		$(targetid+".pure-test").addClass("pure-test-selected");
+		test=core$test.findOne({_id : newid});
+		return test;
+	}
+	
 });
 
 Template.wd_analyst_viewport.helpers({
 	items_selected : function(){
-		console.log('viewport request for analyst window');
 		return Session.get('wd_analyst_viewport_window')=="nav-items";
 	},
 	tests_selected : function(){
-		console.log('viewport request for analyst window');
 		return Session.get('wd_analyst_viewport_window')=="nav-tests";
 	},
 	results_selected : function(){
-		console.log('viewport request for analyst window');
 		return Session.get('wd_analyst_viewport_window')=="nav-results";
 	},
 	profile_selected : function(){
-		console.log('viewport request for analyst window');
 		return Session.get('wd_analyst_viewport_window')=="nav-profile";
 	}
 });
 
-Template.wd_analyst_items_view.helpers({
-	items2 : [
-		{ name : "mate1",
-		  tags : ["calculo","funciones"] },
-		{ name : "mate2",
-		  tags : ["calculo","limites" ,"precalculo","biologia de focas"] },
-		{ name : "mate3",
-		  tags : ["calculo","ecuacion del calor"] },
-		{ name : "mate4",
-		  tags : ["calculo","ley del emparedado","dificiles de calculo"] },
-	],
 
-	items : function(){
-		return core$item.find({});
-	},
-	selected_item : {
-			name: "historia1",
-			text: "Si napoleon bonaparte conquistara america hoy en dia.",
-			question: "¿Como le iria?",
-			options : ["bien","mal","regular sinh","muy mal"],
-			selected_option : "bien",
-			iframe : "none",
-			tags : ["historia","random","napoleon"],
-			description : "Un item sencillo",
-			createdBy : "Juanito",
-	},
-
-	selected_item2 : function(){
-		//Now replace this by the GUI item collection which is 
-		//either loaded from the DB on button click , or created new
-		//and then loaded from the DB on button click, also when edition is finalized
-		//New document is created again.
-		var dct = GUI$arrays._collection.findOne({name : "options"});
-		if (dct){opt = dct.options;}
-		else {opt = [];}
-		var dct = GUI$arrays._collection.findOne({name : "tags"});
-		if (dct){tgs = dct.tags;}
-		else {tgs = [];}
-		var itm = GUI$arrays._collection.findOne({name : "item"});
-		if (itm){
-			console.log("item from db");
-			currentItem = itm.item;
-			currentItem.options = opt;
-			currentItem.tags = tgs;
-			console.log(currentItem);
-		}
-			else {
-				currentItem = {
-					name: "",
-					text: "",
-					question : "",
-					options : opt,
-					selected_option : "",
-					tags : tgs,
-					description : "",
-					createdBy : Meteor.user()
-				}
-			}
-
-
-		
-		return currentItem;
-	},
-});
-
-Template.wd_analyst_item_edit.events({
-	"submit .pure-form" : function(event){
-		return false;
-	},
-	"click .button-tag-remove":function(event){
-		rem = event.target.name;
-		var targetid = '[name='+'"'+rem+'"]'
-		$(targetid+'.pure-button-tag').remove();
-		//renegotiate with db
-		var tags = Array();
-		$('.itemtags').each(
-			function(){
-				tags.push(this.value);
-			}
-		);
-		GUI$arrays._collection.update({name : "tags"},{
-				name : "tags",
-				tags : tags,
-			},
-			{
-				upsert : true
-			}
-		);
-		return false
-	},
-	"click .button-option-remove":function(event){
-		rem = event.target.name;
-		var targetid = '[name='+'"'+rem+'"]'
-		$(targetid+'.pure-button-option').remove();
-		//renegotiate with db
-		var options = Array();
-		$('.itemopti').each(
-			function(){
-				options.push(this.value);
-			}
-		);
-		GUI$arrays._collection.update({name : "options"},{
-				name : "options",
-				options : options,
-			},
-			{
-				upsert : true
-			}
-		);
-		return false
-	},
-	"click .option-add-button":function(event){
-		//Current options must go to the DB first
-		var options = Array();
-		$('.itemopti').each(
-			function(){
-				options.push(this.value);
-			}
-		);
-		options.push(" Opcion ");
-		GUI$arrays._collection.update({name : "options"},{
-				name : "options",
-				options : options,
-			},
-			{
-				upsert : true
-			}
-		);
-		return false;
-	},
-	"click .tag-add-button": function(event){
-		//Current options must go to the DB first
-		var tags = Array();
-		$('.itemtags').each(
-			function(){
-				tags.push(this.value);
-			}
-		);
-		tags.push(" Etiqueta");
-		GUI$arrays._collection.update({name : "tags"},{
-				name : "tags",
-				tags : tags,
-			},
-			{
-				upsert : true
-			}
-		);
-		return false;
-	},
-	"click .pure-button-option":function(event) {
-		//Save options in database to name reaction
-	var options = Array();
-		$('.itemopti').each(
-			function(){
-				options.push(this.value);
-			}
-		);
-		//
-		GUI$arrays._collection.update({name : "options"},{
-				name : "options",
-				options : options,
-			},
-			{
-				upsert : true
-			}
-		);
-		
-		$(".pure-button-option-selected").removeClass("pure-button-option-selected");
-		var targetid = '[name='+'"'+this+'"]'
-		$(targetid+".pure-button-option").addClass("pure-button-option-selected");
-		return false;
-	},
-	"click .pure-button-tag":function(event) {
-		//Save options in database to name reaction
-		var tags = Array();
-		$('.itemtags').each(
-			function(){
-				tags.push(this.value);
-			}
-		);
-		//
-		GUI$arrays._collection.update({name : "tags"},{
-				name : "tags",
-				tags : tags,
-			},
-			{
-				upsert : true
-			}
-		);
-		$(".pure-button-tag-selected").removeClass("pure-button-tag-selected");
-		var targetid = '[name='+'"'+this+'"]'
-		$(targetid+".pure-button-tag").addClass("pure-button-tag-selected");
-		return false;
-	},	
-	"click .item-button-finish":function(event) {
-		//Let's bring everything boys, here's the market list :
-		/*
-		Nombre del item   class = .itemname
-		Descripcion       class = .itemdesc
-		Texto                     .itemtext
-		Pregunta                  .itemques
-		Opciones                  .itemopti
-		Etiquetas                 .itemtags
-
-		Autofills :
-		CreatedBy :
-		CreatedAt :
-		*/
-		itemname = $('.itemname')[0].value;
-		itemdesc = $('.itemdesc')[0].value;
-		itemtext = $('.itemtext')[0].value;
-		itemques = $('.itemques')[0].value;
-		console.log(itemname);
-		console.log(itemdesc);
-		console.log(itemtext);
-		console.log(itemques);
-		var options = Array();
-		$('.itemopti').each(
-			function(){
-				options.push(this.value);
-			}
-		);
-		console.log(options);
-		var tags = Array();
-		$('.itemtags').each(
-			function(){
-				tags.push(this.value);
-			}
-		);
-		console.log(tags);
-		CreatedAt = Date();
-		console.log(CreatedAt);
-
-		
-
-		/**
-		Ceremony is finished, push to the moon
-		**/
-		item = {
-			name : itemname,
-			description : itemdesc,
-			text : itemtext,
-			question : itemques,
-			options : options,
-			tags : tags,
-			CreatedAt : CreatedAt
-		}
-		GUI$arrays._collection.update({name : "item"},{
-				name : "item",
-				item : item,
-			},
-			{
-				upsert : true
-			}
-		);
-		console.log(item);
-
-		//Before meteor.call we must validate
-
-		if(itemname!=""&&itemdesc!=""&&itemtext!=""&&itemques!=""){
-			console.log("Make sure ur not missing options");
-			if(options.length>2){
-			Meteor.call("add_item",item);
-			console.log("item added to db");
-		}
-		}
-
-	}
-});
 
 
 
 /*
-Custom localizing js for accounts
+UI del test
+
+navbar
+__________________________________________________________________________________
+						|							|
+						|	Nombre del test			|	Total items : 5
+	Test Viewport		|							|
+				Btns	|	Descripcion				|	item item item item item
+						|							|
+	Test List			|	Etiquetas				|
+						|		tag1		-		|
+						|		tag2		-		|
+						|		tag3		-		|
+						|					+		|
+						|							|
+						|							|
+						|							|
+						|________________________________________________________							
+						|						add to test      return to maker	
+						|	Item list						
+						|							
+						|
+						|
+
+Roadmap
+
+Add usegroups
+
+Sanitize to show interface only when logged in
+Show in the window a helper that retrieves the core.test.run of the actual item that is open.
+Receive this open test by open and public in a list of tests on other part of the app
+
+
+Items shown are only the user created ones, and the last 10 Same for tests
 */
-
-
-Helpers = {
-	firelocalize : function(){
-		setTimeout(Helpers.localize,100);
-		setTimeout(Helpers.localize,200);
-		setTimeout(Helpers.localize,300);
-		setTimeout(Helpers.localize,500);
-		setTimeout(Helpers.localize,1000);
-		setTimeout(Helpers.localize,2000);
-		setTimeout(Helpers.localize,5000);
-	},
-	localize : function(){
-  $("#login-sign-in-link").text('Registrate');
-  $('.login-close-text').text('Cerrar Dialogo');
-  $('#login-username-or-email-label').text('Email');
-  $('#login-password-label').text('Contraseña');
-  $('#signup-link').text('Registrarse!');
-  $('#forgot-password-link').text('Olvide mi Contraseña');
-  $('#login-buttons-forgot-password').text('Restaurar Contraseña');
-  $('#back-to-login-link').text('Atras');
-  $('#login-username-label').text('Usuario');
-  $('#login-buttons-open-change-password').text('Cambiar Contraseña');
-  $('#login-buttons-logout').text('Salir');
-  $('#reset-password-new-password-label').text('Nueva Contraseña');
-  $('#login-old-password-label').text('Contraseña Actual');
-  $('#login-password-label').text('Nueva Contraseña');
-  $('#login-buttons-do-change-password').text('Cambiar Contraseña');
-  $('#login-buttons-password').text('Crear Cuenta');
-  if ($('#login-buttons-password').text()=='Reset password') {
-  	$('.message.error-message').text('Restaurar Contraseña');
-  }
-  if ($('#login-buttons-password').text()=='Sign in') {
-  	$('.message.error-message').text('Registrarse');
-  }
-  if ($('#login-buttons-password').text()=='Create account') {
-  	$('.message.error-message').text('Crear Cuenta');
-  }
-  if ($('.message.error-message').text()=='Invalid email') {
-  	$('.message.error-message').text('Email Incorrecto');
-  }
-  if ($('.message.error-message').text().indexOf('Username must be at least 3 characters long') != -1) {
-    $('.message.error-message').text('El nombre de usuario debe tener al menos tres caracteres');
-  } else if ($('.message.error-message').text().indexOf('Incorrect password') != -1 || $('.message.error-message').text().indexOf('User not found') != -1) {
-    $('.message.error-message').text('Contraseña incorrecta');
-  }
-	}
-}
-
-Template.loginButtons.onRendered(function() {
-	setTimeout(Helpers.firelocalize,10);
-
-  
-});
-
-Template.loginButtons.events({
-	"click .login-link-and-dropdown-list":function(){
-		Helpers.firelocalize();
-	},
-	"click .additional-link-container":function(){
-		Helpers.firelocalize();
-	},
-	"click .login-button":function(){
-		Helpers.firelocalize();
-	},
-	"click .login-container":function(){
-		Helpers.firelocalize();
-	},
-	"click #back-to-login-link":function(){
-		Helpers.firelocalize();
-	}
-});

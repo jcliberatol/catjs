@@ -21,6 +21,7 @@ role$student$traits = new Mongo.Collection("role.student.traits");
 role$analyst$profile = new Mongo.Collection("role.analyst.profile");
 
 //Core helper Collections
+core$test$run = new Mongo.Collection("core.test.run");
 core$test$availability = new Mongo.Collection("core.test.availability");
 core$test$model = new Mongo.Collection("core.test.model");
 core$item$calibration = new Mongo.Collection("core.test.calibration");

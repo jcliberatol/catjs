@@ -2,8 +2,10 @@
 <div class="pure-menu-horizontal pure-u-1-1">
     <a href="#" class="pure-menu-heading pure-menu-link">CATjs</a>
     <ul class="pure-menu-list pure-u-1-1">
-        <li class="pure-menu-item"><a class="pure-menu-link" id="nav-items">Items</a></li>
-        <li class="pure-menu-item"><a class="pure-menu-link" id="nav-tests">Tests</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" id="nav-items">Items
+        <span class="key-advice-bl">[ctrl+izq]</span></a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" id="nav-tests">Tests
+        	<span class="key-advice-bl">[ctrl+der]</span></a></li>
         <li class="pure-menu-item"><a class="pure-menu-link" id="nav-results">Resultados</a></li>
         <li class="pure-menu-item"><a class="pure-menu-link" id="nav-profile">Perfil</a></li>
     </ul>
@@ -35,22 +37,220 @@
 </div>
 </template>
 <template name="analyst">
+<div class="state-text"></div>
 {{> wd_analyst_ui}}
 </template>
+<!--/*
+*
+*   THE HUGE TEST VIEWER >>>>>>>>>>>>>>>>>>>
+*   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*	>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*	>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/-->
+
+<template name="wd_analyst_tests_view">
+	<div class="pure-g">
+		<div class="pure-u-4-5 pure-u-md-7-24 pure-wireframe-blue">
+		<div class="pure-g">
+			<button class="pure-button pure-minus pure-button-item pure-u-1-6"><i class="fa fa-minus-square-o"></i></button>
+			<button class="pure-button pure-plus pure-button-item pure-u-1-6"><i class="fa fa-plus-square-o"></i></button>
+		</div>
+		<ul class="pure-menu-list pure-u-1-1">
+			{{#each tests}}
+				
+				<li class="pure-menu-item pure-menu-link pure-item pure-test custom-test-presentation" title={{_id}}><h3>{{name}}</h3>  <p>{{description}}</p>
+					<div title={{_id}}>
+					{{#each tags}}
+						<div class="pure-tag-mini">{{.}}</div>
+					{{/each}}
+					</div>
+				</li>
+			{{/each}}
+		</ul>
+		</div>
+		<div class="pure-u-4-5 pure-u-md-16-24 pure-wireframe-blue">
+		{{#with selected_test}}
+			{{> wd_analyst_tests_edit}}
+		{{/with}}
+		</div>
+	</div>
+</template>
+
+
+<template name="wd_analyst_tests_edit">
+	{{#if test_state_released}}
+	<div class="pure-g pure-u-23-24">
+		<div class="pure-u-1 pure-item-quest">
+		Test {{name}} </div><div class="pure-u-1 pure-item-text"> {{description}}   --- </div>
+		<div class="pure-u-1 pure-tag-mini-green">{{items.length}} Items</div>
+		<div class="pure-u-1 pure-item-text">
+		Grupo objetivo : Publico
+		</div>
+		<div class="pure-u-1-1 pure-wireframe-blue">
+		<button class="pure-button pure-button-item pure-float-right">Pausar test (Cerrar) <i class="fa fa-check-square-o"></i></button>
+		<button class="pure-button pure-button-item pure-float-right">Parar y Calificar <i class="fa fa-check-square-o"></i></button>
+		</div>
+		<div class="pure-wireframe-blue pure-u-1">
+		Mostrar Usuarios que han comenzado el test
+		Mostrar Usuarios que han terminado el test
+		Mostrar Scores
+		Mostrar Distribucion de Scores
+		</div>
+	</div>
+	{{/if}}
+
+	{{#if test_state_new}}
+	<div class="pure-u-1-1"> 
+			<button class="pure-button pure-button-item pure-float-right item-button-finish">Finalizar edicion <i class="fa fa-check-square-o"></i><span class="key-advice-bl">[CTRL+ENTER]</span></button>
+	</div>  
+	<div class="pure-u-8-24 pure-wireframe-blue">
+		<form class="pure-form">
+			<fieldset>
+				<legend>Nombre del test :</legend>
+				<div class="pure-u-1-1 pure-button">
+						<input type="text" value={{name}} class="testname">
+					</div>
+			</fieldset>
+			<fieldset>
+				<legend>Descripción :</legend>
+				<div class="pure-u-1-1 pure-button">
+					<textarea class="testdesc">{{description}}</textarea>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>Etiquetas:</legend>
+				<div class="pure-g" name={{.}}>
+					<div class="pure-u-1-1">
+				{{#each tags}}
+						<div class="pure-tag-mini">{{.}}
+							<button class="pure-button-mini delete-tag" name={{.}}><i class="fa fa-minus"></i></button>
+						</div>
+					
+				{{/each}}
+				</div>	
+				</div>
+					<div class="pure-g">
+						<div class="pure-u-1-1">
+						<input type="text" value="" placeholder="nueva etiqueta" class="itemtags pure-u-15-24">
+						<button class="pure-button tag-add-button pure-button-item pure-float-right pure-u-7-24"><i class="fa fa-plus"></i>
+						<span class="key-advice">
+							[enter]
+						</span></button>
+						</div>
+					</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="pure-u-14-24 pure-wireframe-blue">
+		<h3>Total de items : {{items.length}}</h3>
+		{{#each items}}
+		<div class="pure-tag-mini">
+			{{name}}
+			<button class="pure-button-mini delete-tag" name={{_id}} id="item-remove"><i class="fa fa-minus"></i></button>
+		</div>
+		{{/each}}
+		<h3>Estado del test : {{state}}</h3>
+		
+	</div>
+	<div class="pure-g pure-wireframe-blue">
+	<div class="pure-u-1-1">
+		<button class="pure-button pure-back pure-button-item pure-u-1-6"><i class="fa fa-mail-reply"></i></button>
+		<button class="pure-button pure-check pure-button-item pure-u-1-6"><i class="fa fa-check"></i></button>
+	</div>
+	<ul class="pure-menu-list pure-u-1-1">
+		{{#each exporteditems}}
+			<li class="pure-menu-item pure-menu-link pure-item" title={{_id}}>
+				<h3>{{name}}</h3>  <p>{{description}}</p>
+				<div title={{_id}}>
+						<div class="pure-tag-mini">{{tags}}</div>
+				</div>
+			</li>
+		{{/each}}
+	</ul>
+	</div>
+	{{/if}}
+	{{#if test_state_verified}}
+	<div class="pure-u-1-1"> 
+			<button class="pure-button pure-button-item pure-float-right test-state-new">
+				Editar el Test
+				 <i class="fa fa-mail-reply"></i>
+				 <span class="key-advice-bl">[CTRL+backspace]</span>
+			</button>
+			<button class="pure-button pure-button-item pure-float-right test-state-released">
+				Liberar Test al publico
+				 <i class="fa fa-check-square-o"></i>
+				 <span class="key-advice-bl">[CTRL+ENTER]</span>
+			</button>
+	</div>
+	<div class="pure-u-1-1">
+
+		<h1>{{name}}</h1>
+		<p>{{description}}</p>
+		{{#each tags}}
+			<div class="pure-tag-mini">{{.}}</div>			
+		{{/each}}
+		{{#each items}}
+		<div class="pure-item-bullet">
+			{{#with item_full}}
+				<div class="pure-item-nametag">{{name}}</div>
+				<div class="pure-item-desctag">{{description}}</div>
+				{{#each tags}}
+					<div class="pure-tag-mini-green">{{.}}</div>			
+				{{/each}}
+				<div class="pure-item-text">{{text}}</div>
+				<div class="pure-item-quest">{{question}}</div>
+				
+				<div class="pure-item-options">
+				<ul>
+					{{#each options}}
+						<li>{{.}}</li>
+					{{/each}}
+				</ul>
+				<p>
+				Correcta: {{selected_option}}
+				</p>
+				</div>
+			{{/with}}
+		</div>
+		{{/each}}
+	</div>
+	{{/if}}
+</template>
+
+
+
+<!--/*          >>>>>          >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*	>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*   THE FREAKING HUGE ITEM VIEWER and EDITOR >>>>>>>>>>>>>>>>>>>
+*   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*	>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*	>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/-->
+
 
 <template name="wd_analyst_items_view">
 <div class="pure-g">
 	<div class="pure-u-4-5 pure-u-md-7-24 pure-wireframe-blue">
 		<div class="pure-g">
-			<button class="pure-button pure-edit pure-button-item pure-u-1-6"><i class="fa fa-pencil-square-o"></i></button>
-			<button class="pure-button pure-minus pure-button-item pure-u-1-6"><i class="fa fa-minus-square-o"></i></button>
-			<button class="pure-button pure-plus pure-button-item pure-u-1-6"><i class="fa fa-plus-square-o"></i></button>
+			<button class="pure-button pure-edit pure-button-item pure-u-1-6"><i class="fa fa-pencil-square-o"></i>
+			<span class="key-advice-bl">Editar</span>
+			</button>
+			<button class="pure-button pure-minus pure-button-item pure-u-1-6"><i class="fa fa-minus-square-o"></i>
+				<span class="key-advice-bl">Eliminar</span>
+			</button>
+			<button class="pure-button pure-plus pure-button-item pure-u-1-6"><i class="fa fa-plus-square-o"></i><span class="key-advice-bl">Nuevo</span><span class="key-advice-bl">
+							[CTRL+ALT+n]
+						</span></button>
+			<button class="pure-button pure-export pure-button-item pure-u-1-6"><i class="fa fa-external-link-square"></i>
+				<span class="key-advice-bl">Exportar</span>
+			</button>
 		</div>
 		<ul class="pure-menu-list pure-u-1-1">
 			{{#each items}}
 				
-				<li class="pure-menu-item pure-menu-link pure-item" title={{name}}>{{name}} 
-					<div title={{name}}>
+				<li class="pure-menu-item pure-menu-link pure-item" title={{_id}}>
+					<h3>{{name}}</h3>  <p>{{description}}</p>
+					<div title={{_id}}>
 					{{#each tags}}
 						<div class="pure-tag-mini">{{.}}</div>
 					{{/each}}
@@ -70,8 +270,8 @@
 <template name="wd_analyst_item_edit">
 	<div class="pure-g">
 	<div class="pure-g">
-		<div class="pure-u-1-1">
-			<button class="pure-button pure-button-item pure-float-right item-button-finish">Finalizar edicion <i class="fa fa-check-square-o"></i></button>
+		<div class="pure-u-1-1"> 
+			<button class="pure-button pure-button-item pure-float-right item-button-finish">Finalizar edicion <i class="fa fa-check-square-o"></i><span class="key-advice-bl">[CTRL+ENTER]</span></button>
 		</div>  
 	</div>
 	<div class="pure-g">
@@ -80,7 +280,9 @@
 				<div class="pure-u-11-24 pure-wireframe-blue">
 				<form class="pure-form">
 					<fieldset>
-						<legend>Nombre del item:</legend>
+						<legend>Nombre del item: <span class="key-advice">
+							[ctrl + n]
+						</span></legend>
 						<input id={{name}} type="text" value={{name}} class="pure-u-1-1 itemname">
 					</fieldset>
 				</form>
@@ -119,11 +321,13 @@
 						<button class="pure-button pure-button-item button-option-remove" name={{.}}><i class="fa fa-minus"></i></button>
 						</div>
 						<div class="pure-u-3-5">
-						<input type="text" value={{.}} class="pure-inline itemopti"></div>
+						<input type="text" value={{.}} name={{.}} class="pure-inline itemopti"></div>
 						</div>
 						{{/each}}
 						<div class="pure-g">
-						<button class="pure-button pure-button-item pure-float-right option-add-button pure-u-1-1"><i class="fa fa-plus"></i></button>
+						<button class="pure-button pure-button-item pure-float-right option-add-button pure-u-1-1"><i class="fa fa-plus"></i><span class="key-advice">
+							[ctrl + o]
+						</span></button>
 						</div>
 					</fieldset>
 				</form>
@@ -142,7 +346,10 @@
 						</div>
 						{{/each}}
 						<div class="pure-g">
-						<button class="pure-button tag-add-button pure-button-item pure-float-right pure-u-1-1"><i class="fa fa-plus"></i></button>
+						<button class="pure-button tag-add-button pure-button-item pure-float-right pure-u-1-1"><i class="fa fa-plus"></i>
+						<span class="key-advice">
+							[ctrl + e]
+						</span></button>
 						</div>
 					</fieldset>
 				</form>
@@ -153,9 +360,6 @@
 	</div>
 </template>
 
-<template name="wd_analyst_tests_view">
-	
-</template>
 <template name="wd_analyst_results_view">
 	
 </template>
