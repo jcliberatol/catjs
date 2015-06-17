@@ -31,7 +31,7 @@ Meteor.publish("core.model",function(){});
 //Core helper Collections
 Meteor.publish("core.test.run",function(){
 	if(this.userId){
-		return core$test.run.find({});
+		return core$test$run.find({});
 	}
 });
 Meteor.publish("core.test.availability",function(){});

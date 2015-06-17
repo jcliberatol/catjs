@@ -70,6 +70,10 @@ Template.wd_analyst_navbar.events({
 });
 
 Template.wd_analyst_tests_edit.helpers({
+	open_test : function(){
+		log = core$test$run.findOne({testid : this._id , state : "open"});
+		return log;
+	},
 	item_full : function(){
 		return core$item.findOne({ _id : this._id});
 	},

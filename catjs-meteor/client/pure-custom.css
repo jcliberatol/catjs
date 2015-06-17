@@ -396,7 +396,291 @@ Verified GUI for item bullers
 	margin: 0px;
 	padding: 0px;
 	border-style: solid none none none;
-	border-width: 1px;
+	border-width: 1p
+	x;
 	border-color: rgba(20,50,100,1);
 	color: rgba(20,50,100,1);
 }
+
+/*
+
+		academic-signature 
+
+	An UI family. By Juan Liberato && Sandra Guayambuco
+
+font family
+'Alegreya' For content
+'Cinzel'  For Titles
+
+Things to need 
+
+- Lists , for content like the lists of items
+
+- Navbar, for the navbar of the app.
+
+- Content-Container , to show a item, a container is used , content container styles
+					  the whole sheet tree.
+- Button, for the beautifull buttons
+
+Tha'ts it.
+
+*/
+
+@keyframes nbar {
+	0%  {
+		box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0);
+	}
+	50% {
+		box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,1);
+	}
+	100%{
+		box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0);
+	}
+}
+
+@keyframes nbar2 {
+	0%  {
+		box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0);
+	}
+	50% {
+		box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,1);
+	}
+	100%{
+		box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0);
+	}
+}
+.signature-navbar{
+background-color: rgba(200,200,200,0.1);
+color: white !important;
+-webkit-box-shadow: inset 0px 0px 62px -21px rgba(0,0,0,1);
+-moz-box-shadow: inset 0px 0px 62px -21px rgba(100,100,100,0.1);
+box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,1);
+}
+
+.signature-navbar-unit {
+	color: rgba(255,255,255,1);
+	font-size: 17px;
+	font-weight: 900;
+	font-variant: small-caps;
+	font-family: 'Cinzel', serif;
+	text-decoration: none;
+	text-shadow: 2px 2px 1px rgba(100,100,100,1);
+	display: inline;
+	padding: 6px;
+	margin: 1px;
+	border-width: 1px;
+	animation-name: nbar;
+	animation-duration : 4s;
+	animation-play-state: paused;
+	
+}
+
+.signature-navbar-unit:hover {
+	background-color: rgba(245,245,245,1);
+	margin: 0px;
+	box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0);
+	border-style: dotted;
+	animation-name: nbar2;
+	animation-duration : 1s;
+	animation-play-state: running;
+}
+
+
+.signature-list{
+	/*this is a paper element*/
+	color: black !important;
+	border-width: 1px;
+	border-style: solid;
+	border-top-color: rgba(200,200,200,1);
+	border-bottom-color: rgba(150,150,150,1);
+	background-color: rgba(200,200,200,0.1);
+	-webkit-box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0.5);
+	-moz-box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0.5);
+	box-shadow: inset 0px 0px 32px -25px rgba(0,0,0,0.5);
+}
+
+@keyframes example {
+	0%  {
+		box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+		background-color: rgba(200,200,200,0.15);
+	}
+	50% {
+		box-shadow: 3px 3px 9px 0px rgba(0,0,0,1);
+		background-color: rgba(250,250,250,0);
+	}
+	100%{
+		box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+		background-color: rgba(200,200,200,0.15);
+	}
+}
+
+@keyframes example2 {
+	0%  {
+		box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+		background-color: rgba(200,200,200,0.15);
+	}
+	50% {
+		box-shadow: 4px 4px 8px 0px rgba(0,0,0,0.7);
+		background-color: rgba(240,240,240,0);
+	}
+	100%{
+		box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+		background-color: rgba(200,200,200,0.15);
+	}
+}
+
+.signature-list-unit {
+	padding: 7px;
+	font-family: 'Alegreya', serif;
+	margin: 5px;
+	box-shadow: 2px 2px 3px 0px rgba(0,0,0,1);
+	background-color: rgba(200,200,200,0.15);
+	animation-name: example;
+	animation-duration : 4s;
+	animation-play-state: paused;
+}
+
+.signature-list-unit:hover {
+	box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+	background-color: rgba(200,200,200,0.15);
+	animation-name: example2;
+	animation-duration : 1s;
+	animation-play-state: running;
+}
+
+.signature-list-unit:active {
+	box-shadow: 2px 2px 8px 0px rgba(0,0,0,1);
+	background-color: rgba(200,200,200,0.15);
+}
+
+.signature-list-unit h1 {
+	padding: 10px;
+	font-size: 22px;
+	font-family: 'Cinzel', serif;
+	color: rgba(50,50,50,1);
+}
+
+.signature-list-unit h2 {
+	padding: 3px;
+	font-size: 20px;
+	font-family: 'Alegreya', serif;
+	font-weight: 300;
+}
+
+.signature-list-unit h3 {
+	font-family: 'Alegreya', serif;
+	padding: 2px;
+	font-size: 17px;
+	color: rgba(50,50,50,1);
+	font-weight: 300;
+}
+
+.signature-list-unit p {
+	font-family: 'Alegreya', serif;
+	font-weight: 400;
+	color: rgba(50,50,50,1);
+	font-style: italic;
+	padding: 2px;
+}
+
+.signature-list-unit span {
+	font-size: 10px;
+	color: gray;
+	font-family: 'Alegreya', serif;
+}
+
+/*Signature inline , permite ser añadido en una sencilla linea a todo*/
+.sg-nlin {
+	display: inline-block;
+	margin: 0px 0px 0px 0px;
+}
+
+.sg-bulletless {
+	list-style-type: none;
+}
+/*Signature button bar*/
+
+.signature-btn-bar {
+	display: inline-block;
+}
+
+.sg-btn-xl {
+	font-size: 30px;
+	font-family: 'Alegreya', serif;
+}
+
+.sg-btn-l {
+	font-size: 23px;
+	font-family: 'Alegreya', serif;
+}
+
+.sg-btn-m {
+	font-size: 17px;
+	font-family: 'Alegreya', serif;
+}
+
+.sg-btn-s {
+	font-size: 14px;
+	font-family: 'Alegreya', serif;
+}
+
+.sg-btn-xs {
+	font-size: 11px;
+	font-family: 'Alegreya', serif;
+}
+
+.sg-btn-rd{
+	color: rgba(230,0,0,1);
+	font-weight: 600;
+	font-variant: small-caps;
+	font-family: 'Cinzel', serif;
+}
+
+.sg-nlin-li{
+	display: inline-block;
+	margin: 0px;
+	border-style: solid;
+	border-width: 1px;
+	padding: 6px;
+	border-color: rgba(0,0,0,0.1);
+	font-variant: small-caps;
+	box-shadow: 2px 2px 10px -5px rgba(0,0,0,1);
+}
+
+.sg-titl-li {
+	margin: 0pz;
+	padding: 6px;
+	font-family: 'Alegreya', serif;
+	display: inline-block;
+}
+.sg-nlin-ul{
+	display: inline-block;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+	
+}
+
+.sg-fl-r{
+	float: right;
+}
+
+.sg-font-alegreya {
+	font-family: 'Alegreya', serif !important;
+}
+
+.sg-font-cinzel {
+	font-family: 'Cinzel', serif !important;
+}
+
+.sg-nopadding {
+	padding: 0px !important;
+}
+/*
+<div class="signature-btn-bar">
+					<button class="sg-btn-bg"> Grande !</button>
+					<button class="sg-btn-md"> Medio !</button>
+					<button class="sg-btn-sm"> Pequeño !</button>
+					<button class="sg-btn-rd sg-btn-md"> Alerta !</button>
+				</div>
+*/

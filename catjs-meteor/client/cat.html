@@ -1,16 +1,79 @@
 <template name="cat">
-<div class="pure-g">
-	<div class="pure-menu-horizontal pure-u-1-1">
-		<a href="#" class="pure-menu-heading pure-menu-link"> CATjs </a>
-		<ul class="pure-menu-list">
-			<li class="pure-menu-item"><a href="#" class="pure-menu-link">Tests</a></li>
-			<li class="pure-menu-item"><a href="#" class="pure-menu-link">Perfil</a></li>
-			<li class="pure-menu-item"><a href="#" class="pure-menu-link">Resultados</a></li>
-			<li class="pure-menu-item"><a href="#" class="pure-menu-link">Examen</a></li>
+	{{> wd_cat_navbar}}
+	<div class="pure-g">
+	{{#each test_list}}
+		<div class="pure-u-6-24">
+			<li class="signature-list-unit">
+		<span>{{_id}}</span>
+		<h1 class="sg-titl-li sg-fl-r sg-nopadding sg-nlin">{{item_list.length}} Items </h1>
+		{{#with test_view}}
+			<p class="sg-nlin sg-fl-r">{{createdAt}}</p>
+			<div class="sg-nlin"><h3 class="sg-nlin">{{name}} : </h3>
+			<p class="sg-nlin">
+			{{description}}
+			</p>
+			</div>
+			<ul class="sg-nlin-ul sg-bulletless">
+			<li class="sg-titl-li"> Etiquetas : </li>
+			{{#each tags}}
+			<li class="sg-nlin-li">	{{.}}</li>
+			{{/each}}
 		</ul>
+		{{/with}}
+	</li>
 	</div>
-</div>
+	{{/each}}
+	</div>
 </template>
 
-<template name="wd-cat-navbar">
+<template name="wd_cat_navbar">
+	<div class="pure-g signature-navbar">
+	<div >
+		<ul class="pure-u-1">
+			<li class="signature-navbar-unit">Tests</li>
+			<li class="signature-navbar-unit">Perfil</li>
+			<li class="signature-navbar-unit">Resultados</li>
+		</ul>
+	</div>
+	</div>
+
+	<div class="pure-g signature-list">
+		<ul class="pure-u-6-24 sg-bulletless">
+			<li class="signature-list-unit ">
+				<h1>Matematicas , Prueba final</h1>
+				<h2> Martes 3 Junio, 2015</h2>
+				<h3>Esta prueba es gratuita y dada por dascire.</h3>
+				<p> La prueba de matematicas consta de 25 items, esta esta diseñada para obtener tu nivel inicial y darte mas herramientas para aprender</p>
+				<span>codigo : 3AJBG5TY</span>
+				<div class="signature-btn-bar">
+					<button class="sg-btn-xl"> Un</button>
+					<button class="sg-btn-l"> Item</button>
+					<button class="sg-btn-m"> Puede</button>
+					<button class="sg-btn-s"> Existir</button>
+					<button class="sg-btn-xs"> Siempre</button>
+					<button class="sg-btn-rd sg-btn-m"> Alerta !</button>
+				</div>
+
+
+			</li>
+		</ul><ul class="pure-u-6-24 sg-bulletless">
+			<li class="signature-list-unit"><h2>Un item rapido</h2><p>Su descripcion es clara y concisa, no pierde tiempo en estilajes</p></li>
+			<li class="signature-list-unit">
+				<div class="sg-nlin"><h3 class="sg-nlin">Geografia : </h3><p class="sg-nlin">La ciencia de la tierra</p></div>
+			</li>
+			<li class="signature-list-unit">
+				<form action="action_page.php">
+					<fieldset>
+						<legend>Ingresa tus datos:</legend>
+						Nombre:<br>
+						<input type="text" name="firstname" value="Mickey">
+						<br>
+						Apellido:<br>
+						<input type="text" name="lastname" value="Mouse">
+						<br>
+						<input type="submit" value="Actualizar"></fieldset>
+				</form> 
+			</li>
+		</ul>
+	</div>
 </template>

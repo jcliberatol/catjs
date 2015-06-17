@@ -91,10 +91,15 @@
 		<button class="pure-button pure-button-item pure-float-right">Parar y Calificar <i class="fa fa-check-square-o"></i></button>
 		</div>
 		<div class="pure-wireframe-blue pure-u-1">
-		Mostrar Usuarios que han comenzado el test
-		Mostrar Usuarios que han terminado el test
-		Mostrar Scores
-		Mostrar Distribucion de Scores
+			{{#with open_test}}
+				<h3>Test abierto</h3>
+				<p>Mostrar Usuarios que han comenzado el test : {{responses.length}}</p>
+				<p>
+				Mostrar Usuarios que han terminado el test
+				Mostrar Scores
+				Mostrar Distribucion de Scores
+				</p>
+			{{/with}}
 		</div>
 	</div>
 	{{/if}}
